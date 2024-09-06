@@ -5,7 +5,7 @@ import { Folder } from '@/types/folder';
 import { PluginKey } from '@/types/plugin';
 import { IconFolderPlus, IconMessagesOff, IconPlus } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, MutableRefObject } from 'react';
 import { ChatFolders } from '../Folders/Chat/ChatFolders';
 import { Search } from '../Sidebar/Search';
 import { ChatbarSettings } from './ChatbarSettings';
@@ -65,6 +65,7 @@ export const Chatbar: FC<Props> = ({
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredConversations, setFilteredConversations] =
     useState<Conversation[]>(conversations);
+    
 
   const handleUpdateConversation = (
     conversation: Conversation,

@@ -1,8 +1,8 @@
 import { SupportedExportFormats } from '@/types/export';
 import { PluginKey } from '@/types/plugin';
-import { IconFileExport, IconMoon, IconSun } from '@tabler/icons-react';
+import { IconBook, IconFileExport, IconMoon, IconSun, IconSend } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Import } from '../Settings/Import';
 import { Key } from '../Settings/Key';
 import { SidebarButton } from '../Sidebar/SidebarButton';
@@ -37,12 +37,24 @@ export const ChatbarSettings: FC<Props> = ({
   onClearPluginKey,
 }) => {
   const { t } = useTranslation('sidebar');
+  const [showTrainingData, setShowTrainingData] = useState(false);
+
+
+  const handleTrainingData = () => {
+    setShowTrainingData(!showTrainingData);
+  };
+
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
-      {conversationsCount > 0 ? (
-        <ClearConversations onClearConversations={onClearConversations} />
-      ) : null}
+      {conversationsCount > 0 ? <ClearConversations onClearConversations={onClearConversations} /> : null}
+
+
+    <SidebarButton 
+    text={t('学習データ登録')} 
+    icon={<IconBook size={18} />} 
+    onClick={handleTrainingData} 
+    />
 
       <Import onImport={onImportConversations} />
 
@@ -70,5 +82,6 @@ export const ChatbarSettings: FC<Props> = ({
         onClearPluginKey={onClearPluginKey}
       />
     </div>
+    
   );
 };
