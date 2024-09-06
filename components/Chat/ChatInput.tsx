@@ -22,6 +22,7 @@ import {
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
+import { ChatProvider, useChat } from '../Context/TrainingDataContext';
 
 interface Props {
   messageIsStreaming: boolean;
