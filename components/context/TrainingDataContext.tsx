@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
 
 interface TrainingDataContextType {
-    message: string; // 現在のメッセージ
-    setMessage: (msg: string) => void; // メッセージを更新するための関数
+    trainingdata: string; // 現在のメッセージ
+    setTrainingData: (msg: string) => void; // メッセージを更新するための関数
 }
 
 // TrainingDataContextを作成。初期値はundefined。
@@ -11,11 +11,11 @@ const TrainingDataContext = createContext<TrainingDataContextType | undefined>(u
 // TrainingDataProviderコンポーネントを定義
 export const TrainingDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       // useStateフックを使用してメッセージの状態を管理
-      const [message, setMessage] = useState<string>(''); // 初期メッセージは空
+      const [trainingdata, setTrainingData] = useState<string>(''); // 初期メッセージは空
 
         // Providerで子コンポーネントに状態を渡す
         return (
-            <TrainingDataContext.Provider value={{ message, setMessage }}>
+            <TrainingDataContext.Provider value={{ trainingdata, setTrainingData }}>
                       {children} {/* Provider内の子コンポーネントを描画 */}
                       </TrainingDataContext.Provider>
                         );

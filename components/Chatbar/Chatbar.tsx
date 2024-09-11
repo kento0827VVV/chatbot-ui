@@ -36,6 +36,7 @@ interface Props {
   onImportConversations: (data: SupportedExportFormats) => void;
   onPluginKeyChange: (pluginKey: PluginKey) => void;
   onClearPluginKey: (pluginKey: PluginKey) => void;
+  handleTrainingData: boolean;
 }
 
 export const Chatbar: FC<Props> = ({
@@ -60,6 +61,7 @@ export const Chatbar: FC<Props> = ({
   onImportConversations,
   onPluginKeyChange,
   onClearPluginKey,
+  handleTrainingData,
 }) => {
   const { t } = useTranslation('sidebar');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -208,6 +210,7 @@ export const Chatbar: FC<Props> = ({
         onImportConversations={onImportConversations}
         onPluginKeyChange={onPluginKeyChange}
         onClearPluginKey={onClearPluginKey}
+        handleTrainingData={handleTrainingData}
       />
     </div>
   );

@@ -21,6 +21,7 @@ interface Props {
   onImportConversations: (data: SupportedExportFormats) => void;
   onPluginKeyChange: (pluginKey: PluginKey) => void;
   onClearPluginKey: (pluginKey: PluginKey) => void;
+  handleTrainingData: boolean;
 }
 
 export const ChatbarSettings: FC<Props> = ({
@@ -43,6 +44,7 @@ export const ChatbarSettings: FC<Props> = ({
   const handleTrainingData = () => {
     setShowTrainingData(!showTrainingData);
   };
+
 
 
   return (
@@ -85,3 +87,4 @@ export const ChatbarSettings: FC<Props> = ({
     
   );
 };
+

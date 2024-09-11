@@ -1,6 +1,6 @@
 import { Message } from '@/types/chat';
 import { OpenAIModel } from '@/types/openai';
-import { Plugin } from '@/types/plugin';
+import { Plugin, PluginKey } from '@/types/plugin';
 import { Prompt } from '@/types/prompt';
 import {
   IconBolt,
@@ -8,6 +8,7 @@ import {
   IconPlayerStop,
   IconRepeat,
   IconSend,
+  IconBook,
 } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
 import {
@@ -22,7 +23,8 @@ import {
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
-import { ChatProvider, useChat } from '../Context/TrainingDataContext';
+import { SidebarButton } from '../Sidebar/SidebarButton';
+import { SupportedExportFormats } from '@/types/export';
 
 interface Props {
   messageIsStreaming: boolean;
@@ -56,14 +58,20 @@ export const ChatInput: FC<Props> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showPluginSelect, setShowPluginSelect] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
+  const [condition, setCondition] = useState(true);
+
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
-
+  
   const filteredPrompts = prompts.filter((prompt) =>
     prompt.name.toLowerCase().includes(promptInputValue.toLowerCase()),
   
   );
 
+  
+  const handleTrainingData = () => {
+    setCondition(!condition);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -255,7 +263,7 @@ export const ChatInput: FC<Props> = ({
     }, 
   );
 
-  return (
+      return (
     <div className="absolute bottom-50 left-50 w-full border-transparent bg-gradient-to-b from-transparent via-white to-white pt-6 dark:border-white/20 dark:via-[#343541] dark:to-[#343541] md:pt-2">
       <div className="stretch mx-2 mt-4 flex flex-row gap-3 last:mb-2 md:mx-4 md:mt-[52px] md:last:mb-6 lg:mx-auto lg:max-w-3xl">
         {messageIsStreaming && (
@@ -300,36 +308,77 @@ export const ChatInput: FC<Props> = ({
             </div>
           )}
 
-          <textarea
-              ref={textareaRef}
-              className="m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-10"
-              style={{
-                resize: 'none',
-                bottom: `${textareaRef?.current?.scrollHeight}px`,
-                maxHeight: '400px',
-                overflow: `${textareaRef.current && textareaRef.current.scrollHeight > 400
-                    ? 'auto'
-                    : 'hidden'}`,
-              }}
-              placeholder={t('Type a message or type "/" to select a prompt...') || ''}
-              value={content}
-              rows={1}
-              onCompositionStart={() => setIsTyping(true)}
-              onCompositionEnd={() => setIsTyping(false)}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              />
+{typeof condition !== 'undefined' && condition ? (
+  <>
+    <textarea
+      ref={textareaRef}
+      className="m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-10"
+      style={{
+        resize: 'none',
+        bottom: `${textareaRef?.current?.scrollHeight}px`,
+        maxHeight: '400px',
+        overflow: `${
+          textareaRef.current && textareaRef.current.scrollHeight > 400
+            ? 'auto'
+            : 'hidden'
+        }`,
+      }}
+      placeholder={t('Type a message or type "/" to select a prompt...') || ''}
+      value={content}
+      rows={1}
+      onCompositionStart={() => setIsTyping(true)}
+      onCompositionEnd={() => setIsTyping(false)}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+    />
 
-              <button
-                className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-                onClick={handleSend}
-              >
-                {messageIsStreaming ? (
-                  <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
-                ) : (
-                  <IconSend size={18} />
-                )}
-              </button>
+    <button
+      className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
+      onClick={handleSend}
+    >
+      {messageIsStreaming ? (
+        <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
+      ) : (
+        <IconSend size={18} />
+      )}
+    </button>
+  </>
+) : (
+  <>
+    <textarea
+      ref={textareaRef}
+      className="m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-10"
+      style={{
+        resize: 'none',
+        bottom: `${textareaRef?.current?.scrollHeight}px`,
+        maxHeight: '400px',
+        overflow: `${
+          textareaRef.current && textareaRef.current.scrollHeight > 400
+            ? 'auto'
+            : 'hidden'
+        }`,
+      }}
+      placeholder={t('学習させたい情報を入力してください') || ''}
+      value={content}
+      rows={1}
+      onCompositionStart={() => setIsTyping(true)}
+      onCompositionEnd={() => setIsTyping(false)}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+    />
+
+    <button
+      className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
+      onClick={handleSend}
+    >
+      {messageIsStreaming ? (
+        <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
+      ) : (
+        <IconSend size={18} />
+      )}
+    </button>
+  </>
+)}
 
           {showPromptList && filteredPrompts.length > 0 && (
             <div className="absolute bottom-12 w-full">
@@ -366,43 +415,18 @@ export const ChatInput: FC<Props> = ({
         {t(
           "Chatbot UI is an advanced chatbot kit for OpenAI's chat models aiming to mimic ChatGPT's interface and functionality.",
         )}
-        <div className="relative mx-2 flex w-50 flex-grow flex-col rounded-md border border-black/10 bg-white shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:border-gray-900/50 dark:bg-[#40414F] dark:text-white dark:shadow-[0_0_15px_rgba(0,0,0,0.10)] sm:mx-4">
-        <textarea
-            ref={textareaRef}
-            className="m-0 w-full resize-none border-0 bg-transparent p-0 py-2 pr-8 pl-10 text-black dark:bg-transparent dark:text-white md:py-3 md:pl-10"
-            style={{
-              resize: 'none',
-              bottom: `${textareaRef?.current?.scrollHeight}px`,
-              maxHeight: '400px',
-              overflow: `${
-                textareaRef.current && textareaRef.current.scrollHeight > 400
-                  ? 'auto'
-                  : 'hidden'
-              }`,
-            }}
-            placeholder={
-              t('学習させたい情報を入力してください') || ''
-            }
-            value={content}
-            rows={1}
-            onCompositionStart={() => setIsTyping(true)}
-            onCompositionEnd={() => setIsTyping(false)}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-          />
-
-          <button
-            className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-            onClick={handleSend}
-          >
-            {messageIsStreaming ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>
-            ) : (
-              <IconSend size={18} />
-            )}
-          </button>
           </div>
-      </div>
+          <div
+          className={`fixed top-0 bottom-0 z-50 flex h-full w-[260px] flex-none flex-col space-y-2 bg-[#202123] p-2 transition-all sm:relative sm:top-0`}
+        >
+    <SidebarButton 
+        text={t('学習データ登録')} 
+        icon={<IconBook size={18} />} 
+        onClick={handleTrainingData} 
+        />
+    </div>
     </div>
   );
 };
+
+
